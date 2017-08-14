@@ -20,8 +20,8 @@ def recursive_backtracker_gif(width, height, scale):
             return None
 
     def draw_point(x, y, color):
-        maze_gif.put_rect(x * scale, y * scale, (x + 1) * scale,
-                          (y + 1) * scale, color)
+        maze_gif.put_rect(x * scale, y * scale, (x + 1) * scale - 1,
+                          (y + 1) * scale - 1, color)
 
     maze_gif = Gif(width * scale, height * scale, colors)
     cur_maze = [[True for y in range(height)] for x in range(width)]
@@ -41,6 +41,9 @@ def recursive_backtracker_gif(width, height, scale):
             if points:
                 draw_point((x + points[-1][0]) // 2,
                            (y + points[-1][1]) // 2, HALL_COLOR)
+                maze_gif.next_frame(3)
+            else:
+                maze_gif.next_frame(1000)
         else:
             new_x, new_y = new_point
             cur_maze[new_x][new_y] = False
@@ -48,9 +51,7 @@ def recursive_backtracker_gif(width, height, scale):
             cur_maze[(x + new_x) // 2][(y + new_y) // 2] = False
             draw_point((x + new_x) // 2, (y + new_y) // 2, PATH_COLOR)
             points.append(new_point)
-        maze_gif.next_frame(1)
-
-    maze_gif.next_frame(250)
+            maze_gif.next_frame(5)
 
     return maze_gif
 
@@ -61,5 +62,5 @@ HALL_COLOR = (255, 255, 255)
 colors = [WALL_COLOR, PATH_COLOR, HALL_COLOR]
 
 if __name__ == '__main__':
-    gif = recursive_backtracker_gif(21, 21, 5)
-    gif.write('maze.gif')
+    gif = recursive_backtracker_gif(251, 251, 3)
+    gif.write_to_file('maze.gif')
